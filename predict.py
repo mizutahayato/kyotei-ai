@@ -1,8 +1,8 @@
 import os
-from google import genai
+from google import genai  # ここが重要です！
 
-# 1. APIキーの設定（最新ライブラリの書き方）
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+# ...あとは今の models. が入っているコードでOKです
 
 # 2. 予想用データ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
