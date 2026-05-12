@@ -1,25 +1,25 @@
 import os
 from google import genai
 
-# 1. 最新のGemini設定
-# client.models.generate_content という形式で呼び出すのが正解です
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+# APIキーの取得
+api_key = os.environ.get("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 
-# 2. サンプルデータ
+# サンプルデータ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる
 try:
-    # models. を忘れないように記述しています
+    # 重要：client.models.generate_content と記述
     response = client.models.generate_content(
         model="gemini-1.5-flash",
         contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
     )
     prediction_text = response.text.replace('\n', '<br>')
 except Exception as e:
-    prediction_text = f"予想取得中にエラーが発生しました。詳細: {str(e)}"
+    # エラー内容を画面に出す
+    prediction_text = f"エラー発生: {str(e)}"
 
-# 4. index.html を作成
+# index.html の作成
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -35,6 +35,7 @@ html_content = f"""
 <body>
     <div class="card">
         <h1>AI競艇予想 (自動更新)</h1>
+        <hr>
         <div class="bet">{prediction_text}</div>
     </div>
 </body>
