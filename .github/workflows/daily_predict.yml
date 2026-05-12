@@ -2,20 +2,22 @@ name: AI Kyotei Prediction Update
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 毎日日本時間 9:00 に実行（UTC 0:00）
-  workflow_dispatch: # 手動でいつでも実行できるボタンを追加
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: # ここに直接権限を書くことでより確実に動くようにします
+      contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # 最新版に更新
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # 最新版に更新
         with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: pip install google-generativeai
