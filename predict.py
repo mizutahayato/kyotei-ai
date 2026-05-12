@@ -2,13 +2,15 @@ import os
 from google import genai
 
 # 1. 最新のGemini設定
+# client.models.generate_content という形式で呼び出すのが正解です
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # 2. サンプルデータ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる（ここを最新の書き方に修正）
+# 3. AIに予想させる
 try:
+    # models. を忘れないように記述しています
     response = client.models.generate_content(
         model="gemini-1.5-flash",
         contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
