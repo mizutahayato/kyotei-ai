@@ -1,30 +1,23 @@
 import os
-import google.generativeai as genai
-from google.generativeai.types import RequestOptions
+from google import genai
 
-# 1. Geminiの設定
-api_key = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=api_key)
+# 1. 最新のGemini設定
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
-# 2. 【重要】APIバージョンを「v1」に固定して、モデルを指定します
-model = genai.GenerativeModel(
-    model_name='gemini-1.5-flash',
-    # v1betaではなくv1（安定版）を使うように強制します
-    request_options=RequestOptions(api_version='v1')
-)
-
-# 3. サンプルデータ
+# 2. サンプルデータ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 4. AIに予想させる
+# 3. AIに予想させる
 try:
-    prompt = f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
-    response = model.generate_content(prompt)
+    response = client.generate_content(
+        model="gemini-1.5-flash",
+        prompt=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
+    )
     prediction_text = response.text.replace('\n', '<br>')
 except Exception as e:
     prediction_text = f"予想取得中にエラーが発生しました。詳細: {str(e)}"
 
-# 5. index.html を作成
+# 4. index.html を作成
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
