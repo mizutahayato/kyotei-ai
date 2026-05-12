@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      # ここで警告に出ていた Node.js 24 への移行を先取り設定します
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,4 +33,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git add index.html
           git commit -m "Update prediction" || echo "No changes to commit"
-          git push
+          # ここをより強力な送信コマンドに変更します
+          git push origin main
