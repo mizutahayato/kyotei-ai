@@ -1,34 +1,41 @@
 import os
 from google import genai
 
-# APIキー設定
-api_key = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
+# 1. APIキーの設定（最新ライブラリの書き方）
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
-# 予想用データ
+# 2. 予想用データ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
+# 3. AIに予想させる（ここを client.models.generate_content に修正）
 try:
-    # 命令を client.models.generate_content に完全に修正
     response = client.models.generate_content(
         model="gemini-1.5-flash",
-        contents=f"競艇のプロとして的中重視の3連単3点を出して：{race_data}"
+        contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
     )
-    # AIの回答を取得
+    # AIの回答テキストを取得
     prediction_text = response.text.replace('\n', '<br>')
 except Exception as e:
     prediction_text = f"エラーが発生しました: {str(e)}"
 
-# HTML作成
+# 4. index.html を作成
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
-<head><meta charset="UTF-8"><title>AI競艇</title></head>
-<body style="text-align:center; background:#f0f4f8; padding:20px;">
-    <div style="background:white; padding:20px; border-radius:15px; max-width:500px; margin:auto;">
-        <h1>AI競艇予想 最新版</h1>
-        <div style="text-align:left; line-height:1.6;">{prediction_text}</div>
-        <p style="font-size:10px; color:gray;">更新時刻: 2026/05/13</p>
+<head>
+    <meta charset="UTF-8">
+    <title>AI競艇的中ナビ</title>
+    <style>
+        body {{ font-family: sans-serif; text-align: center; background: #f0f4f8; padding: 20px; }}
+        .card {{ background: white; padding: 20px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+        .bet {{ color: #e63946; font-weight: bold; font-size: 1.1em; text-align: left; line-height: 1.6; }}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>AI競艇予想 (最終修正版)</h1>
+        <hr>
+        <div class="bet">{prediction_text}</div>
     </div>
 </body>
 </html>
