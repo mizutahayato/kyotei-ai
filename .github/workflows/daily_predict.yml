@@ -17,10 +17,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11' # Pythonのバージョンを新しくして警告を消します
 
       - name: Install dependencies
-        run: pip install google-generativeai
+        run: pip install -U google-generativeai
 
       - name: Run prediction script
         env:
@@ -33,5 +33,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add index.html
           git commit -m "Update prediction" || echo "No changes to commit"
-          # ここをより強力な送信コマンドに変更します
           git push origin main
