@@ -1,8 +1,6 @@
 name: AI Kyotei Prediction Update
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -17,10 +15,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # Pythonのバージョンを新しくして警告を消します
+          python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install google-genai  # ここを google-genai に変更
+      - name: Install ONLY latest library
+        run: |
+          pip uninstall -y google-generativeai  # 古い方を確実に消す
+          pip install google-genai             # 新しい方だけを入れる
 
       - name: Run prediction script
         env:
@@ -32,5 +32,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add index.html
-          git commit -m "Update prediction" || echo "No changes to commit"
+          git commit -m "Complete update" || echo "No changes"
           git push origin main
