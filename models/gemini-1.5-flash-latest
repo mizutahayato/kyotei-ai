@@ -4,17 +4,19 @@ import google.generativeai as genai
 # 1. Geminiの設定
 api_key = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-1.5-flash')
 
-# 2. サンプルデータ
+# 【ここを修正】 モデル名を最新の指定方法に変更します
+model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+
+# 2. サンプルデータ（そのまま）
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる
+# 3. AIに予想させる（そのまま）
 prompt = f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
 response = model.generate_content(prompt)
-prediction_text = response.text.replace('\n', '<br>') # 改行をWeb用にする
+prediction_text = response.text.replace('\n', '<br>')
 
-# 4. index.html を作成
+# 4. index.html を作成（そのまま）
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -30,7 +32,7 @@ html_content = f"""
 <body>
     <div class="card">
         <h1>AI競艇予想 (自動更新)</h1>
-        <div class="bet">{prediction_text}</div>
+        <div class="bet">{{prediction_text}}</div>
     </div>
 </body>
 </html>
