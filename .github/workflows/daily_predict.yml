@@ -8,14 +8,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: # ここに直接権限を書くことでより確実に動くようにします
+    permissions:
       contents: write
+    env:
+      # ここで警告に出ていた Node.js 24 への移行を先取り設定します
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # 最新版に更新
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # 最新版に更新
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
