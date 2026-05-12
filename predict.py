@@ -5,18 +5,21 @@ import google.generativeai as genai
 api_key = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
-# 【ここを修正】 モデル名を最新の指定方法に変更します
-model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+# 2. モデルの指定（models/ を抜いた、最も標準的な名前に変更）
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-# 2. サンプルデータ（そのまま）
+# 3. サンプルデータ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる（そのまま）
-prompt = f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
-response = model.generate_content(prompt)
-prediction_text = response.text.replace('\n', '<br>')
+# 4. AIに予想させる
+try:
+    prompt = f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
+    response = model.generate_content(prompt)
+    prediction_text = response.text.replace('\n', '<br>')
+except Exception as e:
+    prediction_text = f"AI予想の取得中にエラーが発生しました: {str(e)}"
 
-# 4. index.html を作成（そのまま）
+# 5. index.html を作成
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -26,13 +29,13 @@ html_content = f"""
     <style>
         body {{ font-family: sans-serif; text-align: center; background: #f0f4f8; padding: 20px; }}
         .card {{ background: white; padding: 20px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
-        .bet {{ color: #e63946; font-weight: bold; font-size: 1.2em; }}
+        .bet {{ color: #e63946; font-weight: bold; font-size: 1.1em; text-align: left; }}
     </style>
 </head>
 <body>
     <div class="card">
         <h1>AI競艇予想 (自動更新)</h1>
-        <div class="bet">{{prediction_text}}</div>
+        <div class="bet">{prediction_text}</div>
     </div>
 </body>
 </html>
