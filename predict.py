@@ -1,17 +1,17 @@
 import os
 from google import genai
 
-# 1. APIキーの設定（余計なオプションをすべて削除し、一番シンプルな形にします）
+# 1. APIキーの設定
 api_key = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 
 # 2. 予想用データ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる（configの指定を完全に削除しました）
+# 3. AIに予想させる（モデル名を最新の gemini-2.5-flash に変更）
 try:
     response = client.models.generate_content(
-        model="gemini-1.5-flash",
+        model="gemini-2.5-flash",  # 1.5から2.5にアップグレードしてエラーを回避
         contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
     )
     prediction_text = response.text.replace('\n', '<br>')
