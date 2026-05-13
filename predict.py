@@ -1,24 +1,27 @@
 import os
 from google import genai
+from google.genai import types
 
-# APIキーを読み込む
+# 1. APIキーの設定
 api_key = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 
-# 予想用データ
+# 2. 予想用データ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
+# 3. AIに予想させる（APIバージョンをv1に強制固定します）
 try:
-    # AIに予想させる（最新の正しい書き方）
     response = client.models.generate_content(
         model="gemini-1.5-flash",
-        contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
+        contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}",
+        # 古いv1betaではなく、安定版のv1を使うように指定します
+        config=types.GenerateContentConfig(api_version="v1")
     )
     prediction_text = response.text.replace('\n', '<br>')
 except Exception as e:
-    prediction_text = f"エラーが発生しました: {str(e)}"
+    prediction_text = f"エラー詳細: {str(e)}"
 
-# index.html を作成
+# 4. index.html を作成
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
