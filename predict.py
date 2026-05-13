@@ -1,19 +1,14 @@
 import os
 from google import genai
-from google.genai import types
 
-# 1. APIキーの設定 
-# 【修正】Clientを作る時点で「v1(安定版)」を使うように設定を組み込みます
+# 1. APIキーの設定（余計なオプションをすべて削除し、一番シンプルな形にします）
 api_key = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(
-    api_key=api_key,
-    http_options=types.HttpOptions(api_version="v1")
-)
+client = genai.Client(api_key=api_key)
 
 # 2. 予想用データ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる
+# 3. AIに予想させる（configの指定を完全に削除しました）
 try:
     response = client.models.generate_content(
         model="gemini-1.5-flash",
@@ -21,7 +16,6 @@ try:
     )
     prediction_text = response.text.replace('\n', '<br>')
 except Exception as e:
-    # 万が一エラーが起きても詳細がわかるようにします
     prediction_text = f"エラーが発生しました: {str(e)}"
 
 # 4. index.html を作成
