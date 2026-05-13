@@ -2,24 +2,27 @@ import os
 from google import genai
 from google.genai import types
 
-# 1. APIキーの設定
+# 1. APIキーの設定 
+# 【修正】Clientを作る時点で「v1(安定版)」を使うように設定を組み込みます
 api_key = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
+client = genai.Client(
+    api_key=api_key,
+    http_options=types.HttpOptions(api_version="v1")
+)
 
 # 2. 予想用データ
 race_data = "住之江10R: 1枠小池, 2枠木下, 3枠上條, 4枠橋口, 5枠中越, 6枠谷本"
 
-# 3. AIに予想させる（APIバージョンをv1に強制固定します）
+# 3. AIに予想させる
 try:
     response = client.models.generate_content(
         model="gemini-1.5-flash",
-        contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}",
-        # 古いv1betaではなく、安定版のv1を使うように指定します
-        config=types.GenerateContentConfig(api_version="v1")
+        contents=f"競艇予想のプロとして、以下のデータから的中率重視で3連単3点を選び、その根拠を短く教えてください。：{race_data}"
     )
     prediction_text = response.text.replace('\n', '<br>')
 except Exception as e:
-    prediction_text = f"エラー詳細: {str(e)}"
+    # 万が一エラーが起きても詳細がわかるようにします
+    prediction_text = f"エラーが発生しました: {str(e)}"
 
 # 4. index.html を作成
 html_content = f"""
